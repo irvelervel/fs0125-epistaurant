@@ -1,5 +1,5 @@
 import { Component } from 'react'
-import { Col, Container, Row } from 'react-bootstrap'
+import { Alert, Col, Container, Row } from 'react-bootstrap'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
 
@@ -19,6 +19,7 @@ class ReservationForm extends Component {
   // i valori inseriti nei campi del form!
 
   state = {
+    // STATO INIZIALE DEL COMPONENTE
     reservation: {
       name: '',
       phone: '',
@@ -29,8 +30,53 @@ class ReservationForm extends Component {
     },
   }
 
+  // non si può fare -> this.state.reservation.specialRequests = "qualcosaltro"
+  // perchè lo stato è in SOLA LETTURA (non si può modificare direttamente)
+
   // ora dobbiamo collegare i valori delle proprietà inserite nello stato "reservation"
   // gli INPUT CONTROLLATI sono gestiti da un "two-way databinding"
+
+  // ora che tutti i campi sono collegati a "doppia via" con lo stato,
+  // posso occuparmi della logica di submit del form
+  handleSubmit = (e) => {
+    // handlers vari su clicks etc. vanno creati con le funzioni freccia
+    // per evitare uno scorretto binding del "this"
+    e.preventDefault() // stoppiamo il comportamento di default del form
+    console.log('ORA FACCIO LA FETCH!')
+    // faccio la fetch, con metodo POST
+    fetch('https://striveschool-api.herokuapp.com/api/reservation', {
+      method: 'POST',
+      body: JSON.stringify(this.state.reservation),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert('PRENOTAZIONE SALVATA!')
+          // sarebbe il caso di svuotare il form...
+          // per farlo ripristino lo state alla forma iniziale
+          this.setState({
+            reservation: {
+              name: '',
+              phone: '',
+              numberOfPeople: '1',
+              dateTime: '',
+              smoking: false,
+              specialRequests: '',
+            },
+          })
+        } else {
+          throw new Error('La chiamata non ha restituito esito positivo')
+        }
+      })
+      .catch((e) => {
+        console.log(
+          'si è verificato un errore nel salvataggio della prenotazione',
+          e
+        )
+      })
+  }
 
   render() {
     return (
@@ -38,7 +84,7 @@ class ReservationForm extends Component {
         <Row className="justify-content-center">
           <Col xs={12} md={8} lg={6}>
             <h2 className="my-3 text-center">Prenota il tuo tavolo ORA!</h2>
-            <Form className="mb-5">
+            <Form className="mb-5" onSubmit={this.handleSubmit}>
               <Form.Group className="mb-3">
                 <Form.Label>Il tuo nome</Form.Label>
                 <Form.Control
@@ -53,7 +99,40 @@ class ReservationForm extends Component {
                   onChange={(e) => {
                     this.setState({
                       reservation: {
+                        ...this.state.reservation,
+                        // questa riga fa in modo che il mio NUOVO oggetto reservation
+                        // non parta da oggetto vuoto, ma riparta dall'attuale
+                        // contenuto dello state! Sopra questo contenuto esistente,
+                        // vado ad aggiungere l'attuale contenuto di quello che ho scritto
+                        // nel campo in cui l'ho scritto
                         name: e.target.value, // la lettera che ho scritto
+                        // poichè in un oggetto non posso avere due volte la stess proprietà,
+                        // di fatto vado a sovrascrivere name
+                      },
+                    })
+                  }}
+                />
+              </Form.Group>
+
+              {/* RENDERING CONDIZIONALE */}
+              {/* metodo dello "SHORT CIRCUIT" */}
+              {this.state.reservation.name === 'Al Bano' && (
+                <Alert variant="info">
+                  Un bicchiere di vino con un panino!
+                </Alert>
+              )}
+
+              <Form.Group className="mb-3">
+                <Form.Label>N. di telefono</Form.Label>
+                <Form.Control
+                  type="tel"
+                  required
+                  value={this.state.reservation.phone}
+                  onChange={(e) => {
+                    this.setState({
+                      reservation: {
+                        ...this.state.reservation,
+                        phone: e.target.value,
                       },
                     })
                   }}
@@ -61,13 +140,19 @@ class ReservationForm extends Component {
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Label>N. di telefono</Form.Label>
-                <Form.Control type="tel" required />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
                 <Form.Label>Quanti siete?</Form.Label>
-                <Form.Select aria-label="numero di persone">
+                <Form.Select
+                  aria-label="numero di persone"
+                  value={this.state.reservation.numberOfPeople}
+                  onChange={(e) => {
+                    this.setState({
+                      reservation: {
+                        ...this.state.reservation,
+                        numberOfPeople: e.target.value,
+                      },
+                    })
+                  }}
+                >
                   <option>1</option>
                   <option>2</option>
                   <option>3</option>
@@ -81,16 +166,71 @@ class ReservationForm extends Component {
 
               <Form.Group className="mb-3">
                 <Form.Label>Quando venite?</Form.Label>
-                <Form.Control type="datetime-local" required />
+                <Form.Control
+                  type="datetime-local"
+                  required
+                  value={this.state.reservation.dateTime}
+                  onChange={(e) => {
+                    this.setState({
+                      reservation: {
+                        ...this.state.reservation,
+                        dateTime: e.target.value,
+                      },
+                    })
+                  }}
+                />
               </Form.Group>
 
               <Form.Group className="mb-3">
-                <Form.Check type="checkbox" label="Tavolo fumatori?" />
+                <Form.Check
+                  type="checkbox"
+                  label="Tavolo fumatori?"
+                  // la proprietà "value" dei campi checkbox NON torna true/false
+                  // ma "on"/"off" (come stringhe)
+                  // poichè le API si aspettano un valore booleano per la proprietà
+                  // "smoking" e quindi devo interagire con il valore di "checked"
+                  // a livello di interfaccia
+                  checked={this.state.reservation.smoking}
+                  onChange={(e) =>
+                    this.setState({
+                      reservation: {
+                        ...this.state.reservation,
+                        smoking: e.target.checked,
+                      },
+                    })
+                  }
+                />
               </Form.Group>
 
               <Form.Group className="mb-3">
                 <Form.Label>Allergie, malanni, bambini?</Form.Label>
-                <Form.Control as="textarea" rows={3} />
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={this.state.reservation.specialRequests}
+                  onChange={(e) => {
+                    this.setState({
+                      reservation: {
+                        // dovrei in questo nuovo reservation portarmi dietro
+                        // anche tutte le altre proprietà che non ho toccato!
+                        // ovvero:
+
+                        // name: this.state.reservation.name,
+                        // phone: this.state.reservation.phone,
+                        // smoking: this.state.reservation.smoking,
+                        // dateTime: this.state.reservation.dateTime,
+                        // numberOfPeople: this.state.reservation.numberOfPeople,
+                        // specialeRequests: this.state.reservation.specialRequests
+
+                        // ma posso farlo in velocità utilizzando lo spread operator,
+                        // che crea nel mio nuovo oggetto "guscio" una copia
+                        // di tutti gli attuali valori di this.state.reservation
+                        ...this.state.reservation,
+                        specialRequests: e.target.value,
+                      },
+                    })
+                  }}
+                />
               </Form.Group>
 
               <Button variant="success" type="submit">
