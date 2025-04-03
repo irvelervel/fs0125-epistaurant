@@ -1,6 +1,7 @@
 // dopo aver svuotato i CSS che arrivano con Vite, includo
 // bootstrap.min.css in App.jsx
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import CustomNavbar from './components/CustomNavbar'
 import Home from './components/Home'
 import ReservationForm from './components/ReservationForm'
