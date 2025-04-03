@@ -35,11 +35,11 @@ class Home extends Component {
             <Carousel
               onSlide={(i) => {
                 // cerco di intercettare il cambio slide
-                console.log('funziona??', i)
+                // console.log('funziona??', i)
                 // i è l'indice della slide che sta arrivando
                 // ma di conseguenza, è anche l'indice della pasta che sta per comparire
                 // perchè io genero le slides a partire dalle paste!
-                console.log(pastasciutte[i])
+                // console.log(pastasciutte[i])
                 // dovrei settare pastasciutte[i] come nuova activePasta
                 // come si cambia lo stato di un componente?
                 // purtroppo lo stato di un componente è READ-ONLY

@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import CustomNavbar from './components/CustomNavbar'
 import Home from './components/Home'
 import ReservationForm from './components/ReservationForm'
+import Backoffice from './components/Backoffice'
 
 // per utilizzare Bootstrap in react la cosa migliore è installare 2 pacchetti:
 // - bootstrap
@@ -22,6 +23,8 @@ function App() {
       e lo uso qui! */}
       {/* <CustomNavbar tema="light" /> */}
       <CustomNavbar tema="dark" />
+      {/* qui metterò il componente del "backoffice" */}
+      <Backoffice />
       {/* qui metterò il componente del FORM */}
       <ReservationForm />
       {/* qui ci metterò Home */}
