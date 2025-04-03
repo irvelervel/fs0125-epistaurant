@@ -11,6 +11,7 @@ import {
   ListGroup,
   Button,
   Spinner,
+  Alert,
 } from 'react-bootstrap'
 
 // spoiler: anche oggi avremo bisogno di un componente dotato di STATO
@@ -21,6 +22,7 @@ class Backoffice extends Component {
     reservations: [], // ospiterà eventualmente l'elenco delle prenotazioni
     // che arriverà dalla chiamata GET
     isLoading: true,
+    isError: false,
   }
 
   getReservations = () => {
@@ -50,6 +52,7 @@ class Backoffice extends Component {
         console.log('errore', err)
         this.setState({
           isLoading: false,
+          isError: true,
         })
       })
   }
@@ -108,7 +111,13 @@ class Backoffice extends Component {
           <Col xs={12} md={8} lg={6}>
             <h2 className="text-center">Prenotazioni Esistenti</h2>
             <div className="text-center my-3">
-              <Button variant="warning" onClick={this.getReservations}>
+              <Button
+                variant="warning"
+                onClick={() => {
+                  this.setState({ isLoading: true })
+                  this.getReservations()
+                }}
+              >
                 AGGIORNA
               </Button>
             </div>
@@ -119,7 +128,24 @@ class Backoffice extends Component {
               </div>
             )}
 
+            {this.state.isError && (
+              <Alert variant="danger" className="text-center">
+                <i className="bi bi-patch-exclamation-fill me-2"></i>
+                Errore nel recupero dati
+                <i className="bi bi-patch-exclamation-fill ms-2"></i>
+              </Alert>
+            )}
+
             <ListGroup>
+              {this.state.reservations.length === 0 && // niente prenotazioni
+                !this.state.isLoading && ( // caricamento finito
+                  <ListGroup.Item>
+                    <div className="text-center">
+                      Nessuna prenotazione salvata!
+                    </div>
+                  </ListGroup.Item>
+                )}
+
               {this.state.reservations.map((reservationObject) => {
                 return (
                   <ListGroup.Item
