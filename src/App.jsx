@@ -8,6 +8,7 @@ import ReservationForm from './components/ReservationForm'
 import Backoffice from './components/Backoffice'
 import Footer from './components/Footer'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import NotFound from './components/NotFound'
 // per utilizzare Bootstrap in react la cosa migliore è installare 2 pacchetti:
 // - bootstrap
 // - react-bootstrap
@@ -42,16 +43,19 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 function App() {
   return (
     <BrowserRouter>
-      <main>
+      <main className="d-flex flex-column min-vh-100">
         {/* ho dichiarato la CustomNavbar in un componente separato, ora lo importo
       e lo uso qui! */}
         {/* <CustomNavbar tema="light" /> */}
         <CustomNavbar tema="dark" />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/prenota" element={<ReservationForm />} />
-          <Route path="/admin" element={<Backoffice />} />
-        </Routes>
+        <div className="flex-grow-1">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/prenota" element={<ReservationForm />} />
+            <Route path="/admin" element={<Backoffice />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
         <Footer />
       </main>
     </BrowserRouter>

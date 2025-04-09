@@ -7,9 +7,15 @@
 
 import { Container, Nav, Navbar } from 'react-bootstrap'
 // gli import dei componenti vanno inclusi nel file dove vengono adoperati!
+import { Link, useLocation } from 'react-router-dom'
 
 const CustomNavbar = function (props) {
   // dentro props c'è la proprietà "tema"
+
+  // useLocation ci torna un OGGETTO pieno di informazioni sul contenuto della barra degli indirizzi
+  const location = useLocation()
+  console.log('LOCATION', location)
+
   return (
     <Navbar
       collapseOnSelect
@@ -18,13 +24,38 @@ const CustomNavbar = function (props) {
       data-bs-theme={props.tema} // "light" o "dark"
     >
       <Container fluid={true}>
-        <Navbar.Brand href="#home">Epistaurant</Navbar.Brand>
+        <Link to="/" className="navbar-brand">
+          Epistaurant
+        </Link>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="#features">Menu</Nav.Link>
-            <Nav.Link href="#pricing">Prenota</Nav.Link>
-            <Nav.Link href="#pricing">Amministrazione</Nav.Link>
+            <Link
+              className={
+                location.pathname === '/menu' ? 'nav-link active' : 'nav-link'
+              }
+              to="/menu"
+            >
+              Menu
+            </Link>
+            <Link
+              className={
+                location.pathname === '/prenota'
+                  ? 'nav-link active'
+                  : 'nav-link'
+              }
+              to="/prenota"
+            >
+              Prenota
+            </Link>
+            <Link
+              className={
+                location.pathname === '/admin' ? 'nav-link active' : 'nav-link'
+              }
+              to="/admin"
+            >
+              Amministrazione
+            </Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
@@ -35,3 +66,6 @@ const CustomNavbar = function (props) {
 export default CustomNavbar
 
 // K I S S -> Keep It Simple, Stupid!
+
+// un Nav.Link è un componente di bootstrap che si traduce nell'html in un
+// <a class="nav-link">
