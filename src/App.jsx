@@ -6,7 +6,8 @@ import CustomNavbar from './components/CustomNavbar'
 import Home from './components/Home'
 import ReservationForm from './components/ReservationForm'
 import Backoffice from './components/Backoffice'
-
+import Footer from './components/Footer'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 // per utilizzare Bootstrap in react la cosa migliore è installare 2 pacchetti:
 // - bootstrap
 // - react-bootstrap
@@ -17,20 +18,43 @@ import Backoffice from './components/Backoffice'
 // partenza avendo l'accortezza di importare tutti i sotto-componenti
 // richiesti (altrimenti avrete errori nella console!)
 
+// --- REACT-ROUTER-DOM ---
+// con react-router-dom riusciremo a fornire un'esperienza di navigazione
+// anche nella nostra S-P-A (single-page-application)
+// quello che faremo sarà sostanzialmente un "rendering-condizionale" di
+// determinati componenti sulla base del contenuto della barra degli indirizzi
+// questa "navigazione" sarà completamente client-side.
+
+// come si utilizza react-router-dom? ci sono 3 attori in scena:
+// - BrowserRouter -> è un "contenitore" per il routing, abilita al suo interno il routing
+// - Routes -> un altro contenitore "trasparente" che va inserito circondando le parti dell'app
+// che intendiamo rendere "dinamiche", ovvero che risulteranno sensibili al cambio di URL
+// gli unici figli possibili di Routes sono le singole Route
+// - Route -> crea una rotta per la nostra webapp. Un componente Route necessita di
+// 2 prop: path e element.
+
+// per ricapitolare mettiamo BrowserRouter come contenitore di tutto
+// poi mettiamo un routes per la parte dinamica e al suo interno tutti
+// gli elementi devono essere delle route  che indicano il path e quale
+// elemento deve essere montato quando arriviamo a quel determinato path
+// thx marco!
+
 function App() {
   return (
-    <main>
-      {/* ho dichiarato la CustomNavbar in un componente separato, ora lo importo
+    <BrowserRouter>
+      <main>
+        {/* ho dichiarato la CustomNavbar in un componente separato, ora lo importo
       e lo uso qui! */}
-      {/* <CustomNavbar tema="light" /> */}
-      <CustomNavbar tema="dark" />
-      {/* qui metterò il componente del "backoffice" */}
-      <Backoffice />
-      {/* qui metterò il componente del FORM */}
-      <ReservationForm />
-      {/* qui ci metterò Home */}
-      <Home />
-    </main>
+        {/* <CustomNavbar tema="light" /> */}
+        <CustomNavbar tema="dark" />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/prenota" element={<ReservationForm />} />
+          <Route path="/admin" element={<Backoffice />} />
+        </Routes>
+        <Footer />
+      </main>
+    </BrowserRouter>
   )
 }
 

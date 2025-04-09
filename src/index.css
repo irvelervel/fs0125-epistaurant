@@ -1,1 +1,5 @@
 /* ho svuotato questo file */
+/* inserisco un colore di sfondo tenue */
+body {
+  background-color: #d9d9d9 !important;
+}
