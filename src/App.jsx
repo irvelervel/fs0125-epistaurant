@@ -9,6 +9,8 @@ import Backoffice from './components/Backoffice'
 import Footer from './components/Footer'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import NotFound from './components/NotFound'
+import Menu from './components/Menu'
+import Details from './components/Details'
 // per utilizzare Bootstrap in react la cosa migliore è installare 2 pacchetti:
 // - bootstrap
 // - react-bootstrap
@@ -53,6 +55,10 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/prenota" element={<ReservationForm />} />
             <Route path="/admin" element={<Backoffice />} />
+            <Route path="/menu" element={<Menu />} />
+            {/* queste sopra vengono definite ROTTA STATICHE */}
+            <Route path="/details/:pastaId" element={<Details />} />
+            {/* questa sopra viene definita ROTTA PARAMETRICA */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
